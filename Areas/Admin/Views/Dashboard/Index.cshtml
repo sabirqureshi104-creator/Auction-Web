@@ -1,8 +1,67 @@
+@model Auction_web.Areas.Admin.Models.DashboardViewModel
+
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Dashboard";
 }
 
-<h1>Welcome to AuctionHub Admin</h1>
+<h1>Dashboard</h1>
 
-<p>The admin layout is now working successfully.</p>
+<div class="stats-grid">
+
+    <div class="card">
+        <h2>@Model.TotalUsers</h2>
+        <p>Total Users</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.TotalCategories</h2>
+        <p>Categories</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.TotalItems</h2>
+        <p>Items</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.ActiveAuctions</h2>
+        <p>Active Auctions</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.TotalBids</h2>
+        <p>Total Bids</p>
+    </div>
+
+</div>
+
+<br />
+
+<div class="card">
+
+    <h3>Recent Users</h3>
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var user in Model.RecentUsers)
+            {
+                <tr>
+                    <td>@user.Username</td>
+                    <td>@user.Email</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
