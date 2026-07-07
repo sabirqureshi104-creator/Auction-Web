@@ -1,0 +1,108 @@
+﻿@model Auction_web.Areas.Admin.Models.ItemsViewModel
+
+@{
+    ViewData["Title"] = "Auctions";
+}
+
+<h1>Auctions</h1>
+
+<div class="card">
+
+    <form method="get" class="admin-form">
+        <input name="search"
+               value="@Model.Search"
+               placeholder="Search auctions..." />
+
+        <button>Search</button>
+    </form>
+
+</div>
+
+<br />
+
+<div class="card">
+
+    <table class="table">
+
+        <thead>
+
+            <tr>
+
+                <th>Title</th>
+                <th>Seller</th>
+                <th>Category</th>
+                <th>Bids</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+
+                    <td>@item.ItemTitle</td>
+
+                    <td>@item.Seller?.Username</td>
+
+                    <td>@item.Category?.CategoryName</td>
+
+                    <td>@item.Bids.Count</td>
+
+                    <td>@item.BidStatus</td>
+
+                    <td>@item.CreatedDate.ToString("dd MMM yyyy")</td>
+
+                    <td>
+
+                        <form asp-action="Close"
+                              method="post"
+                              class="inline-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.ItemId" />
+
+                            <button class="btn-small">
+
+                                Close
+
+                            </button>
+
+                        </form>
+
+                        <form asp-action="Delete"
+                              method="post"
+                              class="inline-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.ItemId" />
+
+                            <button class="btn-small danger">
+
+                                Delete
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
