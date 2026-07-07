@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Auction_web.Areas.Admin.Models;
 using Auction_web.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auction_web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Area("Admin")]
     public class UsersController : Controller
     {
