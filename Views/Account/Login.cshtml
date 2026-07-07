@@ -1,0 +1,278 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="custom-register-wrapper">
+    <div class="register-card-dark">
+        <div class="animate-stripe"></div>
+
+        <div class="card-header-section">
+            <div class="icon-badge">
+                <i class="fas fa-sign-in-alt fa-2x"></i>
+            </div>
+            <h2>Authorize Sign In</h2>
+            <p>Login to access your elite digital bidding dashboard</p>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="custom-error-box">
+                <i class="fas fa-exclamation-triangle"></i> @ViewBag.Error
+            </div>
+        }
+
+        <form method="post" action="/Account/Login" class="custom-form">
+            @Html.AntiForgeryToken() <div class="form-column-container">
+
+            <div class="form-field-group">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input type="email" name="Email" placeholder="your@email.com" required />
+                </div>
+            </div>
+
+            <div class="form-field-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" name="Password" placeholder="••••••••" required />
+                </div>
+            </div>
+
+            <div class="form-field-group check-remember-layout">
+                <label class="custom-checkbox-container">
+                    <input type="checkbox" name="RememberMe" value="true" />
+                    <span class="checkmark"></span>
+                    <span class="remember-text">Keep identity active (Remember Me)</span>
+                </label>
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn-submit-custom">
+            <i class="fas fa-sign-in-alt"></i> Authenticate & Login
+        </button>
+
+        <p class="redirect-text">
+            Don't have an active account?
+            <a href="/Account/Register">Create Account Here</a>
+        </p>
+    </form>
+</div>
+</div>
+
+<style>
+    /* Centering wrapper keeping identical styling with registration form */
+    .custom-register-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 85vh;
+        padding: 40px 20px;
+        box-sizing: border-box;
+    }
+
+    /* Main Box Profile standard vertical neat container */
+    .register-card-dark {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 500px;
+        overflow: hidden;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Gold flowing/glowing line */
+    .animate-stripe {
+        height: 6px;
+        background: linear-gradient(90deg, #facc15, #ff8c00, #facc15);
+        background-size: 200% 200%;
+        animation: gradientShift 3s ease infinite;
+    }
+
+    /* Header structure elements */
+    .card-header-section {
+        text-align: center;
+        padding: 30px 30px 10px 30px;
+    }
+
+    .icon-badge {
+        background-color: #0f172a;
+        color: #facc15;
+        border-radius: 50%;
+        display: inline-flex;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 10px 20px rgba(250, 204, 21, 0.15);
+    }
+
+    .card-header-section h2 {
+        color: #ffffff;
+        font-weight: 700;
+        margin: 0;
+        font-size: 1.75rem;
+    }
+
+    .card-header-section p {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        margin-top: 5px;
+    }
+
+    /* Inner spacing grids */
+    .custom-form {
+        padding: 0 40px 40px 40px;
+    }
+
+    .form-column-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .form-field-group {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+        .form-field-group label {
+            display: block;
+            color: #cbd5e1;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+    /* Inputs container architecture */
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+        background-color: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .input-icon {
+        padding: 12px;
+        color: #facc15;
+        min-width: 45px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .input-wrapper input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        padding: 12px 12px 12px 0px;
+        color: #f1f5f9;
+        font-size: 0.95rem;
+        outline: none;
+    }
+
+    .input-wrapper:focus-within {
+        border-color: #facc15;
+        box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.15);
+    }
+
+    /* Custom Look For Checkbox alignment */
+    .check-remember-layout {
+        margin-bottom: 15px;
+        margin-top: -5px;
+    }
+
+    .custom-checkbox-container {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        user-select: none;
+    }
+
+        .custom-checkbox-container input {
+            margin-right: 10px;
+            accent-color: #facc15; /* Changes checkbox focus to gold matching theme */
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+    .remember-text {
+        color: #94a3b8 !important;
+        font-size: 0.88rem;
+        font-weight: 500;
+    }
+
+    /* Error Box layout warning */
+    .custom-error-box {
+        background-color: rgba(234, 179, 8, 0.1);
+        border: 1px solid rgba(234, 179, 8, 0.2);
+        color: #facc15;
+        padding: 12px 20px;
+        margin: 0 40px 20px 40px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+    }
+
+    /* Main Gold Premium Action Button */
+    .btn-submit-custom {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #facc15, #eab308);
+        color: #0f172a;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-top: 10px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .btn-submit-custom:hover {
+            transform: scale(1.01);
+            box-shadow: 0 10px 20px rgba(234, 179, 8, 0.25);
+        }
+
+        .btn-submit-custom i {
+            margin-right: 8px;
+        }
+
+    /* Redirect trigger text footer links */
+    .redirect-text {
+        text-align: center;
+        margin-top: 25px;
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+
+        .redirect-text a {
+            color: #facc15;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+            .redirect-text a:hover {
+                color: #eab308;
+                text-decoration: underline;
+            }
+
+    @@keyframes gradientShift {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+</style>

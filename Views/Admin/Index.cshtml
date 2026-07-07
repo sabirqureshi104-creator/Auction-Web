@@ -1,0 +1,162 @@
+@model Auction_web.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    var search = ViewBag.Search as string;
+}
+
+<div class="admin-page">
+    <div class="admin-hero">
+        <div>
+            <div class="admin-label">Admin Control Center</div>
+            <h1>Admin Dashboard</h1>
+            <p>Manage users, categories, auction items, and recent bids.</p>
+        </div>
+        <form asp-controller="Admin" asp-action="Index" method="get" class="admin-search">
+            <input type="text" name="search" value="@search" placeholder="Search users, auctions, sellers, categories" />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="admin-stats">
+        <div><span>Total Users</span><strong>@Model.TotalUsers</strong></div>
+        <div><span>Blocked Users</span><strong>@Model.TotalBlockedUsers</strong></div>
+        <div><span>Categories</span><strong>@Model.TotalCategories</strong></div>
+        <div><span>Active Auctions</span><strong>@Model.TotalActiveItems</strong></div>
+        <div><span>Closed Auctions</span><strong>@Model.TotalClosedItems</strong></div>
+        <div><span>Bids Today</span><strong>@Model.TotalBidsToday</strong></div>
+    </div>
+
+    <div class="admin-card">
+        <h2>Categories</h2>
+        <form asp-controller="Admin" asp-action="CreateCategory" method="post" class="admin-inline-form">
+            @Html.AntiForgeryToken()
+            <input type="text" name="categoryName" placeholder="New category name" required />
+            <input type="text" name="description" placeholder="Description" />
+            <button type="submit">Add Category</button>
+        </form>
+
+        <form asp-controller="Admin" asp-action="MergeCategory" method="post" class="admin-inline-form">
+            @Html.AntiForgeryToken()
+            <select name="sourceCategoryId" required>
+                <option value="">Source category</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.CategoryId">@category.CategoryName</option>
+                }
+            </select>
+            <select name="targetCategoryId" required>
+                <option value="">Target category</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.CategoryId">@category.CategoryName</option>
+                }
+            </select>
+            <button type="submit">Merge</button>
+        </form>
+
+        <table>
+            <thead><tr><th>Name</th><th>Description</th><th>Items</th><th>Created</th></tr></thead>
+            <tbody>
+            @foreach (var category in Model.Categories)
+            {
+                <tr>
+                    <td>@category.CategoryName</td>
+                    <td>@category.Description</td>
+                    <td>@(category.Items != null ? category.Items.Count : 0)</td>
+                    <td>@category.CreatedDate.ToString("dd MMM yyyy")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="admin-card">
+        <h2>Users</h2>
+        <table>
+            <thead><tr><th>User</th><th>Email</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Username</td>
+                    <td>@user.Email</td>
+                    <td>@user.UserType</td>
+                    <td>@(user.IsBlocked ? "Blocked" : "Active")</td>
+                    <td>
+                        @if (user.IsBlocked)
+                        {
+                            <form asp-controller="Admin" asp-action="UnblockUser" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@user.UserId" />
+                                <button type="submit">Unblock</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Admin" asp-action="BlockUser" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@user.UserId" />
+                                <button type="submit">Block</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="admin-card">
+        <h2>Auction Items</h2>
+        <table>
+            <thead><tr><th>Item</th><th>Seller</th><th>Category</th><th>Current Bid</th><th>Ends</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ItemTitle</td>
+                    <td>@(item.Seller != null ? item.Seller.Username : "N/A")</td>
+                    <td>@(item.Category != null ? item.Category.CategoryName : "N/A")</td>
+                    <td>@((item.CurrentBid ?? item.MinimumBid ?? 0).ToString("C"))</td>
+                    <td>@item.AuctionEndDate.ToString("dd MMM yyyy")</td>
+                    <td>@(item.BidStatus == "A" && item.AuctionEndDate > DateTime.Now ? "Active" : "Closed")</td>
+                    <td>
+                        <form asp-controller="Admin" asp-action="CloseItem" method="post" class="inline-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.ItemId" />
+                            <button type="submit">Close</button>
+                        </form>
+                        <form asp-controller="Admin" asp-action="DeleteItem" method="post" class="inline-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.ItemId" />
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .admin-page { padding: 2rem 0; }
+    .admin-hero, .admin-card, .admin-stats > div { background: #111827; color: #f8fafc; border: 1px solid rgba(212,175,55,.35); border-radius: 18px; box-shadow: 0 14px 30px rgba(0,0,0,.25); }
+    .admin-hero { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: 2rem; margin-bottom: 1.5rem; }
+    .admin-label { color: #d4af37; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+    .admin-hero h1 { margin: .3rem 0; font-weight: 800; }
+    .admin-hero p { margin: 0; color: #cbd5e1; }
+    .admin-search, .admin-inline-form { display: flex; gap: .7rem; flex-wrap: wrap; }
+    input, select { border-radius: 10px; border: 1px solid rgba(212,175,55,.45); padding: .7rem .9rem; background: #0b1220; color: #fff; }
+    button { border: 0; border-radius: 10px; padding: .7rem 1rem; background: #d4af37; color: #111827; font-weight: 700; }
+    .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .admin-stats > div { padding: 1.2rem; }
+    .admin-stats span { display: block; color: #cbd5e1; }
+    .admin-stats strong { font-size: 2rem; color: #d4af37; }
+    .admin-card { padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
+    .admin-card h2 { color: #d4af37; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: .85rem; border-bottom: 1px solid rgba(255,255,255,.1); text-align: left; }
+    th { color: #d4af37; }
+    .inline-form { display: inline-block; margin-right: .4rem; }
+</style>

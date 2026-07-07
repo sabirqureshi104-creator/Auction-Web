@@ -1,0 +1,290 @@
+﻿@model Auction_web.Models.Item
+@using System.Security.Claims
+@{
+    ViewData["Title"] = Model.ItemTitle;
+
+    bool isUserLoggedIn = User.Identity.IsAuthenticated;
+    var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    int? currentUserId = !string.IsNullOrEmpty(currentUserIdClaim) ? int.Parse(currentUserIdClaim) : null;
+
+    bool isLive = (Model.BidStatus == "A" && Model.AuctionEndDate > DateTime.Now);
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<div style="background: #0D0C14; min-height: 100vh; padding: 2rem 4rem; color: #fff; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+
+    <!-- ===== BREADCRUMB ===== -->
+    <div style="margin-bottom: 2rem; font-size: 0.85rem; color: #636e72; letter-spacing: 0.3px;">
+        <a href="@Url.Action("Index", "Home")" style="color: #818395; text-decoration: none;">Home</a>
+        <span style="margin: 0 0.4rem; color: #4a4a5a;">/</span>
+        <a href="@Url.Action("Category", "Items", new { id = Model.CategoryId })" style="color: #f1c40f; text-decoration: none; font-weight: 600;">
+            @(Model.Category?.CategoryName ?? "Category")
+        </a>
+        <span style="margin: 0 0.4rem; color: #4a4a5a;">/</span>
+        <span style="color: #b0b8c5; font-weight: 500;">@Model.ItemTitle</span>
+    </div>
+
+    <!-- ===== MAIN GRID: LEFT (Image + Docs) | RIGHT (Details) ===== -->
+    <div style="display: grid; grid-template-columns: 0.9fr 1.3fr; gap: 2.5rem; align-items: start;">
+
+        <!-- ========== LEFT COLUMN ========== -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+            <!-- IMAGE -->
+            <div style="background: #181622; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <img src="/@Model.ImagePath"
+                         alt="@Model.ItemTitle"
+                         style="width: 100%; height: 400px; display: block; object-fit: cover; background: #0a0a14;" />
+                }
+                else
+                {
+                    <div style="width: 100%; height: 350px; background: #1a1a2e; display: flex; align-items: center; justify-content: center; color: #636e72; font-size: 0.9rem;">
+                        <i class="fas fa-image" style="margin-right: 0.5rem;"></i> No Image
+                    </div>
+                }
+            </div>
+
+            <!-- DOCUMENTS -->
+            <div style="background: #181622; border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid rgba(255,255,255,0.03);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; color: #b2bec3; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
+                    <i class="fas fa-folder" style="color: #818395;"></i> Documents
+                </div>
+                <div style="background: #12101A; border-radius: 10px; padding: 0.8rem 1rem; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.03);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-file-lines" style="color: #f39c12; font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.9rem; color: #dfe6e9;">
+                            @(string.IsNullOrEmpty(Model.DocumentPath) ? "no-specifications.docx" : System.IO.Path.GetFileName(Model.DocumentPath))
+                        </span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.DocumentPath))
+                    {
+                        <a href="@Model.DocumentPath" download style="color: #818395; text-decoration: none; font-size: 1.1rem;">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== RIGHT COLUMN ========== -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+            <!-- TITLE + BADGES -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem;">
+                    <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+                        @if (isLive)
+                        {
+                            <span style="background: rgba(46, 204, 113, 0.15); color: #2ecc71; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                <span style="width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; display: inline-block;"></span> Live
+                            </span>
+                        }
+                        else
+                        {
+                            <span style="background: rgba(231, 76, 60, 0.15); color: #e74c3c; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                <span style="width: 6px; height: 6px; background: #e74c3c; border-radius: 50%; display: inline-block;"></span> Closed
+                            </span>
+                        }
+                        <span style="background: rgba(52, 152, 219, 0.12); color: #3498db; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 20px;">
+                            @Model.Category?.CategoryName
+                        </span>
+                    </div>
+
+                    @if (isUserLoggedIn && currentUserId.HasValue && Model.SellerId == currentUserId.Value)
+                    {
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="@Url.Action("Edit", "Items", new { id = Model.ItemId })" style="background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3); color: #3498db; font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.9rem; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form asp-controller="Items" asp-action="Delete" asp-route-id="@Model.ItemId" method="post" style="display: inline;" onsubmit="return confirm('Delete this listing?');">
+                                <button type="submit" style="background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); color: #e74c3c; font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.9rem; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    }
+                </div>
+
+                <h1 style="font-size: 2rem; font-weight: 800; color: #f1c40f; line-height: 1.3; margin: 0.2rem 0 0.5rem 0;">
+                    @Model.ItemTitle
+                </h1>
+                <p style="color: #b2bec3; font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                    @Model.ItemDescription
+                </p>
+            </div>
+
+            <!-- BID CARDS: Current Bid + Time Left -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div style="background: #181622; border-radius: 16px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.02);">
+                    <div style="color: #636e72; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Current Bid</div>
+                    <div style="color: #f1c40f; font-size: 1.7rem; font-weight: 700; margin: 0.2rem 0 0.1rem 0;">
+                        $@String.Format("{0:N2}", Model.CurrentBid ?? Model.MinimumBid)
+                    </div>
+                    <div style="color: #636e72; font-size: 0.75rem;">@(Model.Bids?.Count ?? 0) bid(s)</div>
+                </div>
+                <div style="background: #181622; border-radius: 16px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.02);">
+                    <div style="color: #636e72; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Time Left</div>
+                    <div id="countdown-timer" style="color: #e74c3c; font-size: 1.25rem; font-weight: 700; margin: 0.2rem 0 0.1rem 0;">Loading...</div>
+                    <div style="color: #636e72; font-size: 0.75rem;">
+                        Min: $@String.Format("{0:N0}", Model.MinimumBid) | Inc: $@String.Format("{0:N0}", Model.BidIncrement)
+                    </div>
+                </div>
+            </div>
+
+            <!-- SELLER -->
+            <div style="background: #181622; border-radius: 16px; padding: 0.9rem 1.2rem; display: flex; align-items: center; gap: 1rem; border: 1px solid rgba(255,255,255,0.02);">
+                <div style="width: 42px; height: 42px; background: #2c2a38; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #818395;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <div style="color: #636e72; font-size: 0.7rem; text-transform: uppercase; font-weight: 700;">Seller</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: #dfe6e9;">
+                        @(Model.Seller?.FullName ?? "User #" + Model.SellerId)
+                        <span style="color: #636e72; font-weight: 400; margin-left: 0.4rem;">Rating: 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BID FORM -->
+            <div style="background: #181622; border-radius: 16px; padding: 1.3rem 1.5rem; border: 1px solid rgba(255,255,255,0.02);">
+                <div style="color: #2ecc71; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; margin-bottom: 0.3rem;">
+                    <i class="fas fa-hand-holding-dollar"></i> Place Your Bid
+                </div>
+
+                @if (TempData["Error"] != null)
+                {
+                    <div style="background: rgba(231, 76, 60, 0.08); border-left: 3px solid #e74c3c; padding: 0.7rem 1rem; border-radius: 4px; margin: 0.5rem 0;">
+                        <p style="margin: 0; font-size: 0.85rem; color: #dfe6e9;">@TempData["Error"]</p>
+                    </div>
+                }
+
+                @if (TempData["Success"] != null)
+                {
+                    <div style="background: rgba(46, 204, 113, 0.08); border-left: 3px solid #2ecc71; padding: 0.7rem 1rem; border-radius: 4px; margin: 0.5rem 0;">
+                        <p style="margin: 0; font-size: 0.85rem; color: #dfe6e9;">@TempData["Success"]</p>
+                    </div>
+                }
+
+                @if (!isUserLoggedIn)
+                {
+                    <div style="background: rgba(231, 76, 60, 0.08); border-left: 3px solid #e74c3c; padding: 0.7rem 1rem; border-radius: 4px; margin-top: 0.5rem;">
+                        <p style="margin: 0; font-size: 0.85rem; color: #dfe6e9;">
+                            Please <a href="@Url.Action("Login", "Account")" style="color: #f1c40f; text-decoration: underline;">login</a> to place a bid.
+                        </p>
+                    </div>
+                }
+                else if (currentUserId.HasValue && Model.SellerId == currentUserId.Value)
+                {
+                    <div style="background: rgba(231, 76, 60, 0.08); border-left: 3px solid #e74c3c; padding: 0.7rem 1rem; border-radius: 4px; margin-top: 0.5rem;">
+                        <p style="margin: 0; font-size: 0.85rem; color: #dfe6e9;">You cannot bid on your own listing.</p>
+                    </div>
+                }
+                else if (!isLive)
+                {
+                    <div style="background: rgba(231, 76, 60, 0.08); border-left: 3px solid #e74c3c; padding: 0.7rem 1rem; border-radius: 4px; margin-top: 0.5rem;">
+                        <p style="margin: 0; font-size: 0.85rem; color: #dfe6e9;">This auction is closed.</p>
+                    </div>
+                }
+                else
+                {
+                    decimal nextMinimumRequired = Convert.ToDecimal(Model.CurrentBid ?? Model.MinimumBid ?? 0) + Convert.ToDecimal(Model.BidIncrement ?? 0);
+                    <div style="color: #2ecc71; font-size: 0.85rem; margin: 0.5rem 0 0.8rem 0;">
+                        Minimum required: <span style="font-weight: 700;">$@String.Format("{0:N2}", nextMinimumRequired)</span>
+                    </div>
+
+                    <form asp-action="PlaceBid" asp-controller="Items" method="post" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <input type="hidden" name="ItemId" value="@Model.ItemId" />
+                        <div style="position: relative; flex: 1; min-width: 150px;">
+                            <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #636e72; font-weight: 600;">$</span>
+                            <input type="number" name="BidAmount"
+                                   min="@nextMinimumRequired"
+                                   step="0.01"
+                                   value="@nextMinimumRequired"
+                                   required
+                                   style="width: 100%; background: #12101A; border: 1px solid rgba(255,255,255,0.07); color: #fff; padding: 0.75rem 1rem 0.75rem 2.2rem; border-radius: 10px; font-size: 0.95rem; outline: none;" />
+                        </div>
+                        <button type="submit" style="background: #2ecc71; color: #12101A; border: none; padding: 0 1.8rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-paper-plane"></i> Bid Now
+                        </button>
+                    </form>
+                }
+            </div>
+
+            <!-- BID HISTORY -->
+            <div style="background: #181622; border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid rgba(255,255,255,0.02);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; color: #b2bec3; font-weight: 600; font-size: 0.9rem; margin-bottom: 1rem;">
+                    <i class="fas fa-clock-rotate-left"></i> Bid History
+                    <span style="background: #2c2a38; font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 20px; color: #818395;">
+                        @(Model.Bids?.Count ?? 0)
+                    </span>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); color: #636e72; font-size: 0.7rem; text-transform: uppercase; font-weight: 700;">
+                            <th style="padding: 0.4rem 0;">Bidder</th>
+                            <th style="padding: 0.4rem 0;">Amount</th>
+                            <th style="padding: 0.4rem 0;">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Bids != null && Model.Bids.Any())
+                        {
+                            @foreach (var bid in Model.Bids.OrderByDescending(b => b.BidAmount))
+                            {
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.85rem;">
+                                    <td style="padding: 0.6rem 0; color: #818395;">User #@bid.BuyerId</td>
+                                    <td style="padding: 0.6rem 0; color: #f1c40f; font-weight: 600;">$@String.Format("{0:N2}", bid.BidAmount)</td>
+                                    <td style="padding: 0.6rem 0; color: #636e72;">@bid.BidDate.ToString("MMM dd, HH:mm")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" style="color: #636e72; font-size: 0.8rem; padding: 1.2rem 0; text-align: center;">No bids yet.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div> <!-- end right column -->
+    </div> <!-- end grid -->
+
+
+</div>
+
+<!-- ===== COUNTDOWN SCRIPT ===== -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const targetDate = new Date("@Model.AuctionEndDate.ToString("yyyy-MM-ddTHH:mm:ss")").getTime();
+        const timerElement = document.getElementById("countdown-timer");
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const delta = targetDate - now;
+
+            if (delta <= 0) {
+                timerElement.innerText = "Auction Closed";
+                timerElement.style.color = "#e74c3c";
+                return;
+            }
+
+            const d = Math.floor(delta / (1000 * 60 * 60 * 24));
+            const h = Math.floor((delta % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((delta % (1000 * 60)) / 1000);
+
+            let output = "";
+            if (d > 0) output += d + "d ";
+            output += h + "h " + m + "m " + s + "s";
+            timerElement.innerText = output;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    });
+</script>

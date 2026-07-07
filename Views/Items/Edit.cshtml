@@ -1,0 +1,62 @@
+﻿@model Auction_web.Models.Item
+
+@{
+    ViewData["Title"] = "Edit Item";
+}
+
+<div style="background: #0D0C14; min-height: 100vh; padding: 4rem 6rem; color: #fff; font-family: 'Segoe UI', Roboto, sans-serif;">
+
+    <div style="max-width: 600px; margin: 0 auto; background: #181622; padding: 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+
+        <h2 style="font-size: 1.8rem; font-weight: 700; color: #f1c40f; margin-top: 0; margin-bottom: 0.5rem;">Edit Your Listing</h2>
+        <p style="color: #636e72; font-size: 0.9rem; margin-bottom: 2rem;">Apne item ki details update karein.</p>
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <input type="hidden" asp-for="ItemId" />
+            <input type="hidden" asp-for="SellerId" />
+            <input type="hidden" asp-for="CreatedDate" />
+            <input type="hidden" asp-for="ImagePath" />
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label style="font-size: 0.85rem; color: #b2bec3; font-weight: 600;">Item Title</label>
+                <input asp-for="ItemTitle" style="background: #12101A; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 0.75rem; border-radius: 6px; outline: none; font-size: 0.95rem;" required />
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label style="font-size: 0.85rem; color: #b2bec3; font-weight: 600;">Change Item Image</label>
+                <input type="file" name="ImageFile" accept="image/*" style="background: #12101A; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 0.75rem; border-radius: 6px; outline: none; font-size: 0.95rem;" />
+                <small style="color: #636e72; font-size: 0.75rem;">(Sirf nayi image upload karne ke liye file select karein)</small>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label style="font-size: 0.85rem; color: #b2bec3; font-weight: 600;">Description</label>
+                <textarea asp-for="ItemDescription" rows="4" style="background: #12101A; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 0.75rem; border-radius: 6px; outline: none; font-size: 0.95rem; resize: none;" required></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.85rem; color: #b2bec3; font-weight: 600;">Minimum Bid ($)</label>
+                    <input asp-for="MinimumBid" type="number" step="0.01" style="background: #12101A; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 0.75rem; border-radius: 6px; outline: none; font-size: 0.95rem;" required />
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.85rem; color: #b2bec3; font-weight: 600;">Bid Increment ($)</label>
+                    <input asp-for="BidIncrement" type="number" step="0.01" style="background: #12101A; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 0.75rem; border-radius: 6px; outline: none; font-size: 0.95rem;" required />
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label style="font-size: 0.85rem; color: #b2bec3; font-weight: 600;">Auction End Date</label>
+                <input asp-for="AuctionEndDate" type="datetime-local" style="background: #12101A; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 0.75rem; border-radius: 6px; outline: none; font-size: 0.95rem;" required />
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <a href="@Url.Action("Details", "Items", new { id = Model.ItemId })" style="flex: 1; text-align: center; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 0.75rem; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.95rem;">
+                    Cancel
+                </a>
+                <button type="submit" style="flex: 1; background: #f1c40f; color: #12101A; border: none; padding: 0.75rem; border-radius: 6px; font-weight: 700; font-size: 0.95rem; cursor: pointer;">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

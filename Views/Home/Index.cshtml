@@ -1,0 +1,241 @@
+﻿@model IEnumerable<Auction_web.Models.Item>
+@{
+    ViewData["Title"] = "Home - BidHub";
+    // Controller se aane wale database data ko view variables mein bind kiya gaya hai
+    var categories = ViewBag.Categories as List<Auction_web.Models.Category>;
+    var liveAuctionsCount = ViewBag.LiveAuctionsCount ?? 0;
+    var activeBidders = ViewBag.ActiveBidders ?? "0";
+    var totalVolume = ViewBag.TotalVolume ?? "0";
+    var currentSearch = ViewBag.CurrentSearch as string;
+}
+
+<style>
+    .hero-overlay-grid, .hero-glow-orb {
+        pointer-events: none !important;
+    }
+
+    .hero-content-container {
+        position: relative;
+        z-index: 10;
+    }
+</style>
+
+<div class="premium-hero-section">
+    <div class="hero-overlay-grid"></div>
+    <div class="hero-glow-orb orb-1"></div>
+    <div class="hero-glow-orb orb-2"></div>
+
+    <div class="hero-content-container">
+        <div class="hero-left-content">
+            <span class="hero-badge"><span class="badge-pulse"></span> Live Digital Bidding Platform</span>
+            <h1 class="hero-main-title">Discover, Bid & <br><span class="gold-gradient-text">Win Exclusive Items</span></h1>
+            <p class="hero-subtext">Experience the most secure, real-time auction marketplace. Join thousands of collectors, traders, and enthusiasts today.</p>
+
+            <form asp-controller="Items" asp-action="Index" method="get" class="hero-search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" name="searchString" value="@currentSearch" placeholder="Search auctions, items, categories..." class="hero-search-input" id="heroSearchInput" />
+                <button type="submit" class="hero-search-btn" style="cursor: pointer;">Search</button>
+            </form>
+
+            <div class="hero-action-buttons" style="position: relative; z-index: 20;">
+                <a href="#explore-auctions" class="btn-hero-primary"><i class="fas fa-bolt"></i> Explore Active Bids</a>
+                <a href="@Url.Action("Create", "Items")" class="btn-hero-secondary"><i class="fas fa-plus"></i> Start Selling</a>
+            </div>
+        </div>
+
+        <div class="hero-right-stats">
+            <div class="hero-stat-card">
+                <div class="hero-stat-icon icon-gold"><i class="fas fa-gavel"></i></div>
+                <div class="hero-stat-number">@liveAuctionsCount</div>
+                <div class="hero-stat-label">Live Auctions</div>
+            </div>
+            <div class="hero-stat-card">
+                <div class="hero-stat-icon icon-teal"><i class="fas fa-users"></i></div>
+                <div class="hero-stat-number">@activeBidders</div>
+                <div class="hero-stat-label">Members</div>
+            </div>
+            <div class="hero-stat-card stat-card-wide">
+                <div class="hero-stat-icon icon-purple"><i class="fas fa-hand-paper"></i></div>
+                <div class="hero-stat-number">@liveAuctionsCount</div>
+                <div class="hero-stat-label">Active Listing Drops</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="home-main-content" id="explore-auctions">
+
+    <div class="categories-section">
+        <h2 class="section-title">Browse <span class="gold-accent-text">Categories</span></h2>
+        <div class="title-underline"></div>
+
+        <div class="categories-grid">
+            @if (categories != null && categories.Count > 0)
+            {
+                foreach (var cat in categories)
+                {
+                    <a href="@Url.Action("Category", "Items", new { id = cat.CategoryId })" class="category-card">
+                        <div class="category-icon-box">
+                            @if (cat.CategoryName == "Electronics")
+                            {
+                                <i class="fas fa-laptop"></i>
+                            }
+                            else if (cat.CategoryName == "Furniture")
+                            {
+                                <i class="fas fa-couch"></i>
+                            }
+                            else if (cat.CategoryName == "Books")
+                            {
+                                <i class="fas fa-book"></i>
+                            }
+                            else if (cat.CategoryName == "Clothing")
+                            {
+                                <i class="fas fa-tshirt"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-box-open"></i>
+                            }
+                        </div>
+                        <h3 class="category-name">@cat.CategoryName</h3>
+                        <p class="category-count">(@(cat.Items != null ? cat.Items.Count(i => i.BidStatus == "A") : 0)) active</p>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="premium-stats-bar">
+        <div class="stat-box">
+            <h3>$@totalVolume</h3>
+            <p>Total Volume Traded</p>
+        </div>
+        <div class="stat-box-divider"></div>
+        <div class="stat-box">
+            <h3>@activeBidders</h3>
+            <p>Active Verified Bidders</p>
+        </div>
+        <div class="stat-box-divider"></div>
+        <div class="stat-box">
+            <h3>@liveAuctionsCount+</h3>
+            <p>Live Continuous Auctions</p>
+        </div>
+    </div>
+
+    <div class="trending-auctions-section">
+        <div class="section-header-group">
+            <div>
+                <h2 class="section-title"><i class="fas fa-fire" style="color: #ff4757;"></i> Hot & Trending <span class="gold-accent-text">Auctions</span></h2>
+                <p class="section-subtitle">Real-time assets currently receiving live bids.</p>
+            </div>
+        </div>
+
+        <div class="auction-cards-grid">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="auction-item-card">
+                        <div class="card-image-wrapper">
+                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                            {
+                             
+                                <!-- CHANGE TO: -->
+                                <img src="/@item.ImagePath" alt="@item.ItemTitle" style="width: 100%; height: 100%; object-fit: contain; background: #0a0a14;" />
+                            }
+                            else
+                            {
+                                <div style="width: 100%; height: 100%; background: #222; display: flex; align-items: center; justify-content: center; color: #555;">
+                                    No Image
+                                </div>
+                            }
+                            <span class="live-indicator-badge"><span class="pulse-dot"></span> LIVE</span>
+                        </div>
+
+                        <div class="card-details-body">
+                            <span class="item-category-tag">@item.Category?.CategoryName</span>
+                            <h3 class="item-title-heading">@item.ItemTitle</h3>
+
+                            <div class="bidding-price-row">
+                                <div class="price-block">
+                                    <span class="price-label">Current Bid</span>
+                                    <span class="price-value-gold">$@String.Format("{0:N2}", item.CurrentBid ?? item.MinimumBid)</span>
+                                </div>
+                                <div class="price-block text-right">
+                                    <span class="price-label">Increment</span>
+                                    <span class="time-countdown-text">$@String.Format("{0:N2}", item.BidIncrement ?? 0)</span>
+                                </div>
+                            </div>
+
+                            <div class="card-action-footer">
+                                <a href="@Url.Action("Details", "Items", new { id = item.ItemId })" class="btn-place-bid">
+                                    <i class="fas fa-gavel"></i> Place Bid
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-state-box" style="grid-column: 1 / -1; text-align: center; padding: 4rem 0;">
+                    <i class="fas fa-box-open empty-icon" style="font-size: 3rem; color: #636e72; margin-bottom: 1rem;"></i>
+                    <h3>No Active Auctions Found</h3>
+                    <p>No active auctions found matching the criteria.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="how-it-works-section">
+        <div class="section-center-title">
+            <h2 class="section-title">How It <span class="gold-accent-text">Works</span></h2>
+            <div class="title-underline center-underline"></div>
+            <p class="section-subtitle text-center">Start your premium bidding journey in 3 simple steps</p>
+        </div>
+
+        <div class="process-steps-grid">
+            <div class="process-step-card">
+                <div class="step-number-badge">01</div>
+                <div class="step-icon-wrapper">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3 class="step-title">Create & Verify</h3>
+                <p class="step-desc">Sign up instantly, set up your profile security, and get verified to start authentic trading.</p>
+            </div>
+
+            <div class="process-step-card">
+                <div class="step-number-badge">02</div>
+                <div class="step-icon-wrapper">
+                    <i class="fas fa-gavel"></i>
+                </div>
+                <h3 class="step-title">Place Your Bids</h3>
+                <p class="step-desc">Explore exclusive live collections, set your maximum thresholds, and track in real-time.</p>
+            </div>
+
+            <div class="process-step-card">
+                <div class="step-number-badge">03</div>
+                <div class="step-icon-wrapper">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3 class="step-title">Win & Collect</h3>
+                <p class="step-desc">Secure the top spot as the countdown hits zero, settle payments, and claim your rare item.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="premium-newsletter-panel">
+        <div class="newsletter-glow"></div>
+        <div class="newsletter-content">
+            <span class="newsletter-badge"><i class="fas fa-bell"></i> Never Miss A Drop</span>
+            <h2 class="newsletter-title">Get Notified Before <br>Exclusive Items Go <span class="gold-gradient-text">Live!</span></h2>
+            <p class="newsletter-sub">Join our elite collectors circle and receive instant drops, trending auctions, and early alerts directly into your inbox.</p>
+
+            <div class="newsletter-form-box">
+                <i class="fas fa-envelope input-mail-icon"></i>
+                <input type="email" placeholder="Enter your email address..." class="newsletter-input" />
+                <button class="newsletter-submit-btn" style="cursor: pointer;">Subscribe Now</button>
+            </div>
+        </div>
+    </div>
+</div>

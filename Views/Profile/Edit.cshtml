@@ -1,0 +1,75 @@
+﻿
+@model Auction_web.Models.EditProfileViewModel
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div style="background: #0D0C14; min-height: 100vh; padding: 4rem 2rem; color: #fff; font-family: sans-serif;">
+    <div style="max-width: 600px; margin: 0 auto; background: #181622; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+
+        <!-- Header -->
+        <div style="background: #2980b9; padding: 1.5rem; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-user-edit" style="font-size: 1.2rem;"></i>
+            <h3 style="margin: 0; font-size: 1.2rem;">Edit Profile</h3>
+        </div>
+
+        <form asp-controller="Profile" asp-action="Edit" method="post" enctype="multipart/form-data" style="padding: 2rem;">
+            <!-- Profile Pic Section -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="width: 100px; height: 100px; background: #2d2d3d; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; border: 2px solid #333;">
+                    <i class="fas fa-user" style="font-size: 3rem; color: #818395;"></i>
+                </div>
+                <button type="button" style="background: transparent; border: 1px solid #f1c40f; color: #f1c40f; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                    <i class="fas fa-camera"></i> Change Photo
+                </button>
+                <p style="color: #636e72; font-size: 0.7rem; margin-top: 5px;">Supported: JPG, PNG</p>
+            </div>
+
+            <!-- Inputs -->
+            <div style="display: grid; gap: 1.5rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Full Name</label>
+                    <input asp-for="Username" style="width: 100%; background: #0D0C14; border: 1px solid #333; padding: 0.8rem; border-radius: 6px; color: #fff;" />
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Email Address</label>
+                    <input asp-for="Email" readonly style="width: 100%; background: #1e1e2d; border: 1px solid #333; padding: 0.8rem; border-radius: 6px; color: #818395; cursor: not-allowed;" />
+                    <small style="color: #636e72;">Email address cannot be changed here.</small>
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Phone Number</label>
+                    <input asp-for="PhoneNumber" type="text" placeholder="e.g. 0300-1234567" style="width: 100%; background: #0D0C14; border: 1px solid #333; padding: 0.8rem; border-radius: 6px; color: #fff;" />
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Address</label>
+                    <textarea asp-for="Address" style="width: 100%; background: #0D0C14; border: 1px solid #333; padding: 0.8rem; border-radius: 6px; color: #fff; height: 80px;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <div style="flex: 1;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">City</label>
+                        <input asp-for="City" type="text" placeholder="City" style="width: 100%; background: #0D0C14; border: 1px solid #333; padding: 0.8rem; border-radius: 6px; color: #fff;" />
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Country</label>
+                        <input asp-for="Country" type="text" placeholder="Country" style="width: 100%; background: #0D0C14; border: 1px solid #333; padding: 0.8rem; border-radius: 6px; color: #fff;" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div style="margin-top: 2.5rem; display: flex; gap: 1rem;">
+                <button type="submit" style="background: #f1c40f; color: #000; border: none; padding: 0.8rem 1.5rem; border-radius: 6px; font-weight: 700; cursor: pointer;">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a href="@Url.Action("Index", "Profile")" style="background: rgba(255,255,255,0.05); color: #fff; padding: 0.8rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600;">
+                    Back to Profile
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

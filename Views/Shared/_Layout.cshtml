@@ -1,0 +1,156 @@
+﻿<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AuctionHub</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<nav class="custom-premium-navbar">
+    <div class="nav-wrapper-fluid">
+
+        <div class="nav-left-group">
+            <div class="nav-branding">
+                <a href="@Url.Action("Index", "Home")" class="brand-link">
+                    <i class="fas fa-gavel gold-gavel-icon"></i> Auction<span class="gold-brand-text">Hub</span>
+                </a>
+            </div>
+
+            <div class="nav-center-menu">
+                <ul class="nav-tab-list">
+                    <li>
+                        <a href="@Url.Action("Index", "Home")" class="nav-tab-item active-tab">
+                            <i class="fas fa-home tab-icon-subtle"></i> Home
+                        </a>
+                    </li>
+
+                   
+
+                    <li>
+                        <a href="@Url.Action("About", "Home")" class="nav-tab-item">
+                            <i class="fas fa-info-circle tab-icon-subtle"></i> About
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Contact", "Home")" class="nav-tab-item">
+                            <i class="fas fa-envelope tab-icon-subtle"></i> Contact
+                        </a>
+                    </li>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <a href="@Url.Action("Create", "Items")" class="nav-tab-item dynamic-sell-tab">
+                                <i class="fas fa-plus tab-icon-subtle"></i> Sell Item
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-right-actions">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="user-authenticated-panel">
+                    <a asp-controller="Profile" asp-action="Index" class="nav-link" style="text-decoration: none; color: #fff;">
+                        <i class="fas fa-user-circle avatar-icon-subtle"></i> My Profile
+                    </a>
+
+                    <button class="nav-notification-bell" aria-label="Notifications">
+                        <i class="fas fa-bell"></i>
+                    </button>
+
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="display: inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-logout-pill" style="border: none; background: none; cursor: pointer; padding: 0; font: inherit;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="user-guest-panel">
+                    <a href="@Url.Action("Login", "Account")" class="nav-tab-item format-guest-login">Login</a>
+                    <a href="@Url.Action("Register", "Account")" class="btn-guest-register">Register</a>
+                </div>
+            }
+        </div>
+
+    </div>
+</nav>
+
+<div class="app-viewport-body">
+    @RenderBody()
+</div>
+
+<footer class="custom-premium-footer">
+    <div class="footer-wrapper-fluid">
+        <div class="footer-grid-layout">
+
+            <div class="footer-column brand-info-box">
+                <div class="footer-brand">
+                    <i class="fas fa-gavel gold-gavel-icon"></i> Auction<span class="gold-brand-text">Hub</span>
+                </div>
+                <p class="footer-description">
+                    Pakistan's premier online auction platform. Find rare items, place bids, and win at unbeatable prices with enterprise-grade security.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-heading">Quick Links</h4>
+                <ul class="footer-links-list">
+                    <li><a href="@Url.Action("Index", "Home")">Home Layout</a></li>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a href="@Url.Action("Index", "Items")">Browse Auctions</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="#">Browse Auctions</a></li>
+                    }
+
+                    <li><a href="@Url.Action("About", "Home")">About Platform</a></li>
+                    <li><a href="@Url.Action("Contact", "Home")">Contact Support</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-heading">Top Categories</h4>
+                <ul class="footer-links-list">
+                    <li><a href="#">Electronics & Gadgets</a></li>
+                    <li><a href="#">Luxury Watches</a></li>
+                    <li><a href="#">Vehicles & Motors</a></li>
+                    <li><a href="#">Real Estate Assets</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-heading">Help & Legal</h4>
+                <ul class="footer-links-list">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Bidding Rules</a></li>
+                    <li><a href="#">Corporate Support</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-bottom-row">
+            <p class="copyright-text">&copy; @DateTime.Now.Year BidHub. All rights reserved.</p>
+            <div class="footer-social-handles">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,207 @@
+﻿@model Auction_web.Models.UserProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile - AuctionHub";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div style="background: #27ae60; color: white; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<!-- Main wrapper tailored with dynamic padding to match your new view console standard -->
+<div style="background: #0D0C14; min-height: 100vh; padding: 4rem 6rem; color: #fff; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+
+    <!-- User Information Header Dashboard Card Section -->
+    <div style="background: #181622; border-radius: 16px; padding: 2.5rem; border: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.4);">
+        <div style="display: flex; align-items: center; gap: 2rem;">
+            <!-- Profile Avatar Badge Maker -->
+            <div style="width: 90px; height: 90px; background: linear-gradient(135deg, #3498db, #2980b9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #fff; font-weight: 700; box-shadow: 0 8px 24px rgba(52, 152, 219, 0.25);">
+                @(!string.IsNullOrEmpty(Model?.UserName) ? Model.UserName.Substring(0, 1).ToUpper() : "U")
+            </div>
+            <div>
+                <h2 style="margin: 0 0 0.5rem 0; font-weight: 700; font-size: 2rem; letter-spacing: -0.5px; color: #fff;">@(Model?.UserName ?? "Auction User")</h2>
+                <div style="color: #818395; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                    <span><i class="fas fa-envelope" style="color: #3498db; margin-right: 0.6rem; width: 16px;"></i> @(Model?.Email ?? "N/A")</span>
+                    <span><i class="fas fa-calendar-alt" style="color: #818395; margin-right: 0.6rem; width: 16px;"></i> Member since @(Model?.JoinDate.ToString("MMMM yyyy") ?? "N/A")</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Administration Profile Accessors Anchors Frame -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; width: 180px;">
+            <a href="@Url.Action("Edit", "Profile")" style="background: #f1c40f; color: #12101A; font-weight: 700; font-size: 0.88rem; padding: 0.7rem 1.25rem; border-radius: 6px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: transform 0.2s, background 0.2s; box-shadow: 0 4px 12px rgba(241, 196, 15, 0.15);">
+                <i class="fas fa-user-edit"></i> Edit Profile
+            </a>
+            <a href="@Url.Action("ChangePassword", "Profile")" style="background: rgba(255,255,255,0.02); color: #fff; border: 1px solid rgba(255,255,255,0.08); font-weight: 600; font-size: 0.88rem; padding: 0.7rem 1.25rem; border-radius: 6px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s;">
+                <i class="fas fa-lock"></i> Password
+            </a>
+        </div>
+    </div>
+
+    <!-- Analytics Dashboard Counter Grid Widgets Row System -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
+        <div style="background: #181622; border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div style="color: #3498db; font-size: 2.2rem; font-weight: 700; margin-bottom: 0.2rem;">@(Model?.ProductsListedCount ?? 0)</div>
+            <div style="color: #636e72; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px;">Products Listed</div>
+        </div>
+        <div style="background: #181622; border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div style="color: #e67e22; font-size: 2.2rem; font-weight: 700; margin-bottom: 0.2rem;">@(Model?.BidsPlacedCount ?? 0)</div>
+            <div style="color: #636e72; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px;">Bids Placed</div>
+        </div>
+        <div style="background: #181622; border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div style="color: #2ecc71; font-size: 2.2rem; font-weight: 700; margin-bottom: 0.2rem;">@(Model?.AuctionsWonCount ?? 0)</div>
+            <div style="color: #636e72; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px;">Auctions Won</div>
+        </div>
+        <div style="background: #181622; border-radius: 12px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div style="color: #f1c40f; font-size: 2.2rem; font-weight: 700; margin-bottom: 0.2rem;">$@String.Format("{0:N2}", Model?.TotalEarnings ?? 0)</div>
+            <div style="color: #636e72; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px;">Total Earnings</div>
+        </div>
+    </div>
+
+    <!-- Data Logs Complex Views Panel System -->
+    <div>
+        <!-- Tabs Header Controller Layout Links -->
+        <div style="display: flex; gap: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 2rem; padding-bottom: 0.25rem;">
+            <button onclick="switchTab('products-pane')" id="tab-products-pane" style="background: none; border: none; color: #fff; font-size: 1.1rem; font-weight: 600; cursor: pointer; padding-bottom: 0.85rem; border-bottom: 2px solid #f1c40f; transition: all 0.2s; outline: none; display: flex; align-items: center; gap: 0.5rem;">
+                My Products <span style="background: rgba(255,255,255,0.08); font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; color: #b2bec3; font-weight: 700;">@(Model?.MyProducts?.Count() ?? 0)</span>
+            </button>
+            <button onclick="switchTab('bids-pane')" id="tab-bids-pane" style="background: none; border: none; color: #636e72; font-size: 1.1rem; font-weight: 600; cursor: pointer; padding-bottom: 0.85rem; border-bottom: 2px solid transparent; transition: all 0.2s; outline: none; display: flex; align-items: center; gap: 0.5rem;">
+                My Bids <span style="background: rgba(255,255,255,0.04); font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; color: #636e72; font-weight: 700;">@(Model?.MyBids?.Count() ?? 0)</span>
+            </button>
+        </div>
+
+        <!-- Content Panel Section 1: Listed Auction Items Grid Log Module -->
+        <div id="products-pane" class="profile-tab-content" style="display: block;">
+            @if (Model?.MyProducts == null || !Model.MyProducts.Any())
+            {
+                <div style="text-align: center; padding: 5rem 0; color: #636e72; background: #181622; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02);">
+                    <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1.25rem; color: #4a4a5a;"></i>
+                    <p style="margin: 0; font-size: 1rem; font-weight: 500;">No auction products listed yet.</p>
+                </div>
+            }
+            else
+            {
+                <div style="background: #181622; border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); color: #636e72; font-size: 0.78rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                                <th style="padding: 1rem 0;">Item Details</th>
+                                <th style="padding: 1rem 0;">Current Bid</th>
+                                <th style="padding: 1rem 0;">End Date</th>
+                                <th style="padding: 1rem 0; text-align: right;">Action Dashboard</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.MyProducts)
+                            {
+                                if (item != null)
+                                {
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.95rem; transition: background 0.2s;">
+                                        <td style="padding: 1.25rem 0; display: flex; align-items: center; gap: 1.25rem;">
+                                            <img src="@(string.IsNullOrEmpty(item.ImagePath) ? "/images/placeholder-item.jpg" : Url.Content("~/" + item.ImagePath))"
+                                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);" />
+                                            <div>
+                                                <span style="font-weight: 600; display: block; color: #fff; margin-bottom: 0.2rem;">@item.ItemTitle</span>
+                                                <span style="font-size: 0.78rem; background: rgba(52, 152, 219, 0.12); color: #3498db; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;">@(item.Category?.CategoryName ?? "General")</span>
+                                            </div>
+                                        </td>
+                                        <td style="padding: 1.25rem 0; color: #f1c40f; font-weight: 700; font-size: 1.05rem;">$@String.Format("{0:N2}", item.CurrentBid ?? item.MinimumBid)</td>
+                                        <td style="padding: 1.25rem 0; color: #dfe6e9; font-size: 0.9rem;">@item.AuctionEndDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                        <td style="padding: 1.25rem 0; text-align: right;">
+                                            <a href="@Url.Action("Details", "Items", new { id = item.ItemId })" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.08); text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
+                                                View Console <i class="fas fa-chevron-right" style="font-size: 0.7rem; margin-left: 0.3rem; color: #818395;"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <!-- Content Panel Section 2: User Placed Bids Log Grid Tracking System -->
+        <div id="bids-pane" class="profile-tab-content" style="display: none;">
+            @if (Model?.MyBids == null || !Model.MyBids.Any())
+            {
+                <div style="text-align: center; padding: 5rem 0; color: #636e72; background: #181622; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02);">
+                    <i class="fas fa-hand-holding-dollar" style="font-size: 3rem; margin-bottom: 1.25rem; color: #4a4a5a;"></i>
+                    <p style="margin: 0; font-size: 1rem; font-weight: 500;">You haven't placed any bids yet.</p>
+                </div>
+            }
+            else
+            {
+                <div style="background: #181622; border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); color: #636e72; font-size: 0.78rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                                <th style="padding: 1rem 0;">Product Title</th>
+                                <th style="padding: 1rem 0;">Your Bid Amount</th>
+                                <th style="padding: 1rem 0;">Bid Placement Time</th>
+                                <th style="padding: 1rem 0; text-align: right;">Auction Live Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var bid in Model.MyBids)
+                            {
+                                if (bid != null)
+                                {
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.95rem;">
+                                        <td style="padding: 1.25rem 0; font-weight: 600; color: #fff;">@(bid.Item?.ItemTitle ?? "Deleted Product")</td>
+                                        <td style="padding: 1.25rem 0; color: #2ecc71; font-weight: 700; font-size: 1.05rem;">$@String.Format("{0:N2}", bid.BidAmount)</td>
+                                        <td style="padding: 1.25rem 0; color: #818395; font-size: 0.9rem;">@bid.BidDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                        <td style="padding: 1.25rem 0; text-align: right;">
+                                            <a href="@Url.Action("Details", "Items", new { id = bid.ItemId })" style="background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.2); color: #2ecc71; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+                                                <span style="width: 6px; height: 6px; background: #2ecc71; border-radius: 50%;"></span> Track Live
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId) {
+        // Hide all custom dynamic tab contents panels
+        const contents = document.querySelectorAll('.profile-tab-content');
+        contents.forEach(content => {
+            if(content) content.style.display = 'none';
+        });
+
+        // Toggle focus state to dynamic click targets
+        const activeTarget = document.getElementById(tabId);
+        if(activeTarget) {
+            activeTarget.style.display = 'block';
+        }
+
+        // DOM Button configurations
+        const productsBtn = document.getElementById('tab-products-pane');
+        const bidsBtn = document.getElementById('tab-bids-pane');
+
+        if (productsBtn && bidsBtn) {
+            if (tabId === 'products-pane') {
+                productsBtn.style.color = '#fff';
+                productsBtn.style.borderBottom = '2px solid #f1c40f';
+                bidsBtn.style.color = '#636e72';
+                bidsBtn.style.borderBottom = '2px solid transparent';
+            } else {
+                bidsBtn.style.color = '#fff';
+                bidsBtn.style.borderBottom = '2px solid #f1c40f';
+                productsBtn.style.color = '#636e72';
+                productsBtn.style.borderBottom = '2px solid transparent';
+            }
+        }
+    }
+</script>

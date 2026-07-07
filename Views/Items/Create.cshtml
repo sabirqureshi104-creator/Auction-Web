@@ -1,0 +1,88 @@
+﻿@model Auction_web.Models.Item
+
+<div class="home-main-content">
+    <div class="sell-container-wrapper">
+        <div class="form-header-strip">
+            <h2 class="sell-main-heading"><i class="fas fa-tags form-icon-accent"></i> List an Item for Auction</h2>
+            <p class="form-sub-label">Fill out the details to deploy your asset to the live bidding marketplace.</p>
+        </div>
+
+        <form asp-action="Create" method="post" enctype="multipart/form-data" class="premium-interactive-form">
+            <div asp-validation-summary="ModelOnly" class="error-summary-alert"></div>
+
+            <div class="form-group-block">
+                <label asp-for="ItemTitle" class="premium-field-label">Item Title</label>
+                <input asp-for="ItemTitle" class="premium-form-input" placeholder="e.g., Rolex Submariner Date (2024)" />
+                <span asp-validation-for="ItemTitle" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group-block">
+                <label asp-for="ItemDescription" class="premium-field-label">Detailed Description</label>
+                <textarea asp-for="ItemDescription" class="premium-form-textarea" rows="5" placeholder="Describe your item's condition, history, features..."></textarea>
+                <span asp-validation-for="ItemDescription" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-grid-dual">
+                <div class="form-group-block">
+                    <label asp-for="MinimumBid" class="premium-field-label">Minimum Bid Price ($)</label>
+                    <div class="input-currency-wrapper">
+                        <span class="currency-indicator">$</span>
+                        <input asp-for="MinimumBid" type="number" step="0.01" class="premium-form-input padding-left-currency" placeholder="0.00" />
+                    </div>
+                    <span asp-validation-for="MinimumBid" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-group-block">
+                    <label asp-for="BidIncrement" class="premium-field-label">Bid Increment ($)</label>
+                    <div class="input-currency-wrapper">
+                        <span class="currency-indicator">$</span>
+                        <input asp-for="BidIncrement" type="number" step="0.01" class="premium-form-input padding-left-currency" placeholder="0.00" />
+                    </div>
+                    <span asp-validation-for="BidIncrement" class="field-validation-error"></span>
+                </div>
+            </div>
+
+            <div class="form-grid-dual">
+                <div class="form-group-block">
+                    <label asp-for="CategoryId" class="premium-field-label">Category</label>
+                    <select asp-for="CategoryId" class="premium-form-select" asp-items="ViewBag.CategoryId">
+                        <option value="">-- Select Category --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-group-block">
+                    <label asp-for="AuctionEndDate" class="premium-field-label">Auction End Date</label>
+                    <input asp-for="AuctionEndDate" type="datetime-local" class="premium-form-input" />
+                    <span asp-validation-for="AuctionEndDate" class="field-validation-error"></span>
+                </div>
+            </div>
+
+            <div class="form-grid-dual">
+                <div class="form-group-block">
+                    <label class="premium-field-label"><i class="fas fa-image"></i> Upload Product Image</label>
+                    <div class="premium-file-upload-zone simple-file-box">
+                        <input type="file" name="imageFile" accept="image/*" class="normal-file-input" id="imgUpload" />
+                    </div>
+                    <span class="field-validation-error">@ViewData.ModelState["ImageUpload"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+                </div>
+
+                <div class="form-group-block">
+                    <label class="premium-field-label"><i class="fas fa-file-pdf"></i> Upload Document (Optional)</label>
+                    <div class="premium-file-upload-zone">
+                        <input type="file" name="documentFile" accept=".pdf,.doc,.docx,.txt" class="hidden-file-input" id="docUpload" />
+                        <label for="docUpload" class="file-zone-trigger">
+                            <i class="fas fa-file-alt zone-icon"></i>
+                            <span>Select Document (pdf, doc, txt)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions-row">
+                <button type="submit" class="btn-form-submit"><i class="fas fa-check-circle"></i> List Item</button>
+                <a href="@Url.Action("Index", "Home")" class="btn-form-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
