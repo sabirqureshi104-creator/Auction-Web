@@ -1,4 +1,101 @@
-﻿@page
-@model Auction_web.Areas.Admin.Views.Categories.IndexModel
+﻿@model Auction_web.Areas.Admin.Models.CategoriesViewModel
+
 @{
+    ViewData["Title"] = "Categories";
 }
+
+<h1>Categories</h1>
+
+<div class="card">
+
+    <form method="get" class="admin-form">
+
+        <input type="text"
+               name="search"
+               value="@Model.Search"
+               placeholder="Search categories..." />
+
+        <button type="submit">Search</button>
+
+    </form>
+
+    <hr />
+
+    <form asp-action="Create" method="post" class="admin-form">
+
+        @Html.AntiForgeryToken()
+
+        <input name="categoryName" placeholder="Category Name" required />
+
+        <input name="description" placeholder="Description" />
+
+        <button>Add Category</button>
+
+    </form>
+
+</div>
+
+<br />
+
+<div class="card">
+
+    <table class="table">
+
+        <thead>
+
+            <tr>
+
+                <th>Name</th>
+                <th>Description</th>
+                <th>Items</th>
+                <th>Created</th>
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var c in Model.Categories)
+            {
+                <tr>
+
+                    <td>@c.CategoryName</td>
+
+                    <td>@c.Description</td>
+
+                    <td>@c.Items.Count</td>
+
+                    <td>@c.CreatedDate.ToString("dd MMM yyyy")</td>
+
+                    <td>
+
+                        <form asp-action="Delete"
+                              method="post"
+                              class="inline-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@c.CategoryId" />
+
+                            <button class="btn-small danger">
+
+                                Delete
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
