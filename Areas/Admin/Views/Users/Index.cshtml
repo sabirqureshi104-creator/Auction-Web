@@ -1,0 +1,78 @@
+﻿@model Auction_web.Areas.Admin.Models.UsersViewModel
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>Users</h1>
+
+<div class="card">
+    <form method="get" class="admin-form">
+        <input type="text" name="search" value="@Model.Search" placeholder="Search username, email, name..." />
+        <button type="submit">Search</button>
+        <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn-link">Reset</a>
+    </form>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Auctions</th>
+                <th>Bids</th>
+                <th>Created</th>
+                <th>Last Login</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Username</td>
+                    <td>@(string.IsNullOrWhiteSpace(user.FullName) ? "-" : user.FullName)</td>
+                    <td>@user.Email</td>
+                    <td>@user.UserType</td>
+                    <td>
+                        @if (user.IsBlocked)
+                        {
+                            <span class="badge badge-danger">Blocked</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-success">Active</span>
+                        }
+                    </td>
+                    <td>@(user.ItemsForSale?.Count ?? 0)</td>
+                    <td>@(user.Bids?.Count ?? 0)</td>
+                    <td>@user.CreatedDate.ToString("dd MMM yyyy")</td>
+                    <td>@(user.LastLogin.HasValue ? user.LastLogin.Value.ToString("dd MMM yyyy HH:mm") : "-")</td>
+                    <td>
+                        @if (user.IsBlocked)
+                        {
+                            <form asp-area="Admin" asp-controller="Users" asp-action="Unblock" method="post" class="inline-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@user.UserId" />
+                                <button type="submit" class="btn-small">Unblock</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-area="Admin" asp-controller="Users" asp-action="Block" method="post" class="inline-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@user.UserId" />
+                                <button type="submit" class="btn-small danger">Block</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
