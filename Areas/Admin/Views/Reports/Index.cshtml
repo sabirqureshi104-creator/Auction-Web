@@ -1,0 +1,54 @@
+﻿@model Auction_web.Areas.Admin.Models.ReportsViewModel
+
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h1>Reports</h1>
+
+<div class="stats-grid">
+    <div class="card">
+        <h2>@Model.TotalUsers</h2>
+        <p>Total Users</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.BlockedUsers</h2>
+        <p>Blocked Users</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.TotalCategories</h2>
+        <p>Categories</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.TotalItems</h2>
+        <p>Total Items</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.ActiveItems</h2>
+        <p>Active Auctions</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.ClosedItems</h2>
+        <p>Closed Auctions</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.TotalBids</h2>
+        <p>Total Bids</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.HighestBid.ToString("C")</h2>
+        <p>Highest Bid</p>
+    </div>
+
+    <div class="card">
+        <h2>@Model.TotalBidValue.ToString("C")</h2>
+        <p>Total Bid Value</p>
+    </div>
+</div>

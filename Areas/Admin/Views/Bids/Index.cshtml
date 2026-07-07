@@ -1,0 +1,43 @@
+﻿@model Auction_web.Areas.Admin.Models.BidsViewModel
+
+@{
+    ViewData["Title"] = "Bids";
+}
+
+<h1>Bids</h1>
+
+<div class="card">
+    <form method="get" class="admin-form">
+        <input name="search" value="@Model.Search" placeholder="Search item, bidder, email..." />
+        <button>Search</button>
+    </form>
+</div>
+
+<br />
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Bidder</th>
+                <th>Email</th>
+                <th>Amount</th>
+                <th>Bid Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var bid in Model.Bids)
+            {
+                <tr>
+                    <td>@bid.Item?.ItemTitle</td>
+                    <td>@bid.Buyer?.Username</td>
+                    <td>@bid.Buyer?.Email</td>
+                    <td>@bid.BidAmount.ToString("C")</td>
+                    <td>@bid.BidDate.ToString("dd MMM yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
